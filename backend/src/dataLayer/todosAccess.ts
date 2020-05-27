@@ -51,10 +51,10 @@ export class TodoAccess {
   }
 
   async deleteTodo(todoId: string, userId: string) {
+    try{
     console.log("ids ",todoId, userId)
     const key = {
       userId: userId,
-      createdAt: "2020-05-27T13:56:31.198Z",
       todoId: todoId
     }
     const data = await this.docClient.delete({
@@ -62,20 +62,29 @@ export class TodoAccess {
       Key: key
     }).promise()
     return data
+  } catch(e) {
+
+    console.log("error captured", e)
+  }
   }
 
   async updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
-    await this.docClient.update({
+    try{
+      await this.docClient.update({
       TableName: this.todosTable,
       Key: { userId, todoId },
-      UpdateExpression: "set name = :todoName, dueDate = :dueDate, done = :done",
+      ExpressionAttributeNames: { "#N": "name" },
+      UpdateExpression: "set #N = :todoName, dueDate = :dueDate, done = :done",
       ExpressionAttributeValues: {
         ":dueDate": updateTodoReq.dueDate,
         ":todoName": updateTodoReq.name,
         ":done": updateTodoReq.done
       },
       ReturnValues: "UPDATED_NEW"
-    }).promise()  
+    }).promise()
+  } catch(e) {
+    console.log("error captured", e)
+  }  
  }
 }
 
