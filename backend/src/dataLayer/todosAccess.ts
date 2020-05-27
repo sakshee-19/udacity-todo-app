@@ -64,20 +64,6 @@ export class TodoAccess {
   }
 
   async updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
-    
-    // const result = await this.docClient.query({
-    //   TableName: this.todosTable,
-    //   IndexName: this.index,
-    //   KeyConditionExpression: 'todoId= :todoId',
-    //   ExpressionAttributeValues:{
-    //     ':todoId': key.todoId
-    //   }
-    // }).promise()
-
-    // if(result.Count == 0) {
-    //   return undefined
-    // }
-
     console.log(this.index)
 
     console.log(this.docClient);
@@ -95,28 +81,8 @@ export class TodoAccess {
         ":done": updateTodoReq.done
       },
       ReturnValues: "UPDATED_NEW"
-    }).promise();
-    // const updatedItem = await this.docClient.update({
-    //   TableName: this.todosTable,
-    //   Key: {
-    //     "todoId": todoId,
-    //     "userId": userId
-    //   },
-    //   UpdateExpression: 'set name=:name, dueDate=:dueDate,  done=:done',
-    //   ExpressionAttributeValues:{
-    //     ':name': updateTodoReq.name,
-    //     ':dueDate': updateTodoReq.dueDate,
-    //     ':done': updateTodoReq.done
-    //   },
-    //   ReturnValues: "ALL_NEW",
-
-    // }).promise()
-    // console.log('updated item ', updtedTodo)
-    
-    // return updatedItem
-    
-return { Updated: updateTodoReq };
-  }
+    }).promise()  
+ }
 }
 
 
