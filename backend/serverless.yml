@@ -19,6 +19,8 @@ provider:
   
 
 functions:
+  RS256Auth:
+    handler: src/lambda/auth/rs256Auth0Authorizer.handler
 
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -43,6 +45,7 @@ functions:
       - http:
           method: post
           path: todos
+          authorizer: RS256Auth
     iamRoleStatements:
       - Effect: Allow
         Action: 
@@ -88,7 +91,7 @@ functions:
           - s3:GetObject
           - s3:PutObject
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
-
+  
 resources:
   Resources:
     # TODO: Add any necessary AWS resources    
