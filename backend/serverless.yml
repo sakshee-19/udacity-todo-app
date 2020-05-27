@@ -32,6 +32,8 @@ functions:
       - http:
           method: get
           path: todos
+          cors: true
+          authorizer: RS256Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -45,7 +47,13 @@ functions:
       - http:
           method: post
           path: todos
+          request:
+            schema:
+              application/json: ${file(models/create-todo-request.json)}
           authorizer: RS256Auth
+          cors: true
+          credentials: true
+          
     iamRoleStatements:
       - Effect: Allow
         Action: 
@@ -59,6 +67,9 @@ functions:
       - http:
           method: patch
           path: todos/{todoId}
+          authorizer: RS256Auth
+          cors: true
+          credentials: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -72,6 +83,9 @@ functions:
       - http:
           method: delete
           path: todos/{todoId}
+          authorizer: RS256Auth
+          cors: true
+          credentials: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -85,6 +99,7 @@ functions:
       - http:
           method: post
           path: todos/{todoId}/attachment
+          cors: true
     iamRoleStatements:
       - Effect: Allow
         Action:
