@@ -9,8 +9,7 @@ export class TodoAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
-    private readonly index = process.env.INDEX_NAME) {
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET) {
   }
 
   generateUrl(todoId: string) {
@@ -53,24 +52,19 @@ export class TodoAccess {
 
   async deleteTodo(todoId: string, userId: string) {
     console.log("ids ",todoId, userId)
+    const key = {
+      userId: userId,
+      createdAt: "2020-05-27T13:56:31.198Z",
+      todoId: todoId
+    }
     const data = await this.docClient.delete({
       TableName: this.todosTable,
-      Key: {
-        todoId: todoId,
-        userId: userId
-      }
+      Key: key
     }).promise()
     return data
   }
 
   async updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
-    console.log(this.index)
-
-    console.log(this.docClient);
-    console.log(updateTodoReq);
-    console.log(userId);
-    console.log(todoId);
-    console.log(this.todosTable);
     await this.docClient.update({
       TableName: this.todosTable,
       Key: { userId, todoId },
