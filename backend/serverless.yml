@@ -15,7 +15,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     INDEX_NAME: TodosIndex
-    IMAGES_S3_BUCKET: Todo-Images-${self:provider.stage}
+    IMAGES_S3_BUCKET: todo-images-${self:provider.stage}
   
 
 functions:
@@ -70,6 +70,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - s3:GetObject
           - s3:PutObject
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
 

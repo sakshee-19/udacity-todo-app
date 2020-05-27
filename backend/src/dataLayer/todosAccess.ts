@@ -8,23 +8,13 @@ export class TodoAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET) {
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
+    private readonly index = process.env.INDEX_NAME) {
   }
-
-//   async getAllGroups(): Promise<Group[]> {
-//     console.log('Getting all groups')
-
-//     const result = await this.docClient.scan({
-//       TableName: this.groupsTable
-//     }).promise()
-
-//     const items = result.Items
-//     return items as Group[]
-//   }
 
   generateUrl(todoId: string) {
       console.log(" bucket name ", this.s3Bucket)
-      const url = uploadUrl(todoId, this.s3Bucket)
+      const url = uploadUrl(this.s3Bucket, todoId)
       return url
   }
 
@@ -43,7 +33,24 @@ export class TodoAccess {
 
     return todo
   }
+
+
+  async getAllTodos(userId: string): Promise<TodoItem[]> {
+    console.log('Getting all todos')
+
+    const results = await this.docClient.query({
+      TableName: this.todosTable,
+      KeyConditionExpression: 'userId= :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      }
+    }).promise()
+    
+    const items = results.Items
+    return items as TodoItem[]
+  }
 }
+
 
 function createDynamoDBClient() {
     return new AWS.DynamoDB.DocumentClient()

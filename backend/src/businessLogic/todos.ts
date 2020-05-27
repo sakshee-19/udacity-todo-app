@@ -27,3 +27,8 @@ export async function createTodos(todoItemRequest: CreateTodoRequest, jwtToken: 
 export function generateUploadUrl(todoId: string):string {
     return todoAccess.generateUrl(todoId)
 }
+
+ export async function getAllTodos(jwtToken: string) : Promise<TodoItem[]> {
+    const userId = parseUserId(jwtToken)
+    return await todoAccess.getAllTodos(userId)
+}
