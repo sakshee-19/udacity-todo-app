@@ -80,19 +80,22 @@ export class TodoAccess {
 
     console.log(this.index)
 
-    const updtedTodo = await this.docClient.update({
+    console.log(this.docClient);
+    console.log(updateTodoReq);
+    console.log(userId);
+    console.log(todoId);
+    console.log(this.todosTable);
+    await this.docClient.update({
       TableName: this.todosTable,
       Key: { userId, todoId },
-      ExpressionAttributeNames: { "#N": "name" },
-      UpdateExpression: "set #N=:todoName, dueDate=:dueDate, done=:done",
+      UpdateExpression: "set #N = :todoName, dueDate = :dueDate, done = :done",
       ExpressionAttributeValues: {
-        ":todoName": updateTodoReq.name,
         ":dueDate": updateTodoReq.dueDate,
+        ":todoName": updateTodoReq.name,
         ":done": updateTodoReq.done
-    },
-    ReturnValues: "UPDATED_NEW"
-  })
-  .promise();
+      },
+      ReturnValues: "UPDATED_NEW"
+    }).promise();
     // const updatedItem = await this.docClient.update({
     //   TableName: this.todosTable,
     //   Key: {
@@ -108,11 +111,11 @@ export class TodoAccess {
     //   ReturnValues: "ALL_NEW",
 
     // }).promise()
-    console.log('updated item ', updtedTodo)
+    // console.log('updated item ', updtedTodo)
     
     // return updatedItem
     
-return { Updated: updtedTodo };
+return { Updated: updateTodoReq };
   }
 }
 
