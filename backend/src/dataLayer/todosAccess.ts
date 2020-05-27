@@ -51,6 +51,18 @@ export class TodoAccess {
     return items as TodoItem[]
   }
 
+  async deleteTodo(todoId: string, userId: string) {
+    console.log("ids ",todoId, userId)
+    const data = await this.docClient.delete({
+      TableName: this.todosTable,
+      Key: {
+        todoId: todoId,
+        userId: userId
+      }
+    }).promise()
+    return data
+  }
+
   async updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
     
     // const result = await this.docClient.query({
@@ -68,30 +80,39 @@ export class TodoAccess {
 
     console.log(this.index)
 
-
-    const updatedItem = await this.docClient.update({
+    const updtedTodo = await this.docClient.update({
       TableName: this.todosTable,
-      Key: {
-        "todoId": todoId,
-        "userId": userId
-      },
-      UpdateExpression: 'set name=:name, dueDate=:dueDate,  done=:done',
-      ExpressionAttributeValues:{
-        ':name': updateTodoReq.name,
-        ':dueDate': updateTodoReq.dueDate,
-        ':done': updateTodoReq.done
-      },
-      ReturnValues: "ALL_NEW",
+      Key: { userId, todoId },
+      ExpressionAttributeNames: { "#N": "name" },
+      UpdateExpression: "set #N=:todoName, dueDate=:dueDate, done=:done",
+      ExpressionAttributeValues: {
+        ":todoName": updateTodoReq.name,
+        ":dueDate": updateTodoReq.dueDate,
+        ":done": updateTodoReq.done
+    },
+    ReturnValues: "UPDATED_NEW"
+  })
+  .promise();
+    // const updatedItem = await this.docClient.update({
+    //   TableName: this.todosTable,
+    //   Key: {
+    //     "todoId": todoId,
+    //     "userId": userId
+    //   },
+    //   UpdateExpression: 'set name=:name, dueDate=:dueDate,  done=:done',
+    //   ExpressionAttributeValues:{
+    //     ':name': updateTodoReq.name,
+    //     ':dueDate': updateTodoReq.dueDate,
+    //     ':done': updateTodoReq.done
+    //   },
+    //   ReturnValues: "ALL_NEW",
 
-    }).promise()
-    console.log('updated item ', updatedItem)
-    // const updateItem = result.Items[0]
-    // updateItem.name = updateTodoReq.name
-    // updateItem.dueDate = updateTodoReq.dueDate
-    // updateItem.done = updateTodoReq.done
-  
-    return updatedItem
+    // }).promise()
+    console.log('updated item ', updtedTodo)
     
+    // return updatedItem
+    
+return { Updated: updtedTodo };
   }
 }
 

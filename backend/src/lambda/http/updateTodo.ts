@@ -17,16 +17,18 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const authorization = event.headers.Authorization
     const jwtToken = authorization.split(' ')[1]
 
-    const item = await updateTodo(updatedTodo, todoId, jwtToken)
+    const items = await updateTodo(updatedTodo, todoId, jwtToken)
 
     return{
       statusCode: 200,
       headers: {
-        'Access-control-allow-Origins':'*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify(item)
+      body: JSON.stringify({
+        items
+      })
     }
-
   
   } catch(e){
     logger.info('provide auth token ', e.message)

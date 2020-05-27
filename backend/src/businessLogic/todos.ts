@@ -43,3 +43,8 @@ export async function updateTodo(updateTodoReq: UpdateTodoRequest, todoId: strin
     console.log('key ', key);
     return await todoAccess.updateTodo(updateTodoReq, todoId, userId)
 }
+
+export async function deleteTodo(todoId: string, jwtToken: string) {
+    const userId = parseUserId(jwtToken)
+    return await todoAccess.deleteTodo(todoId, userId)
+}
