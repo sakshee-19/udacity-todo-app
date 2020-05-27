@@ -8,8 +8,7 @@ export class TodoAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
-    private readonly index = process.env.INDEX_NAME) {
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET) {
   }
 
   generateUrl(todoId: string) {
@@ -45,7 +44,7 @@ export class TodoAccess {
         ':userId': userId
       }
     }).promise()
-    
+
     const items = results.Items
     return items as TodoItem[]
   }
