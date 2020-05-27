@@ -4,11 +4,11 @@ import { TodoItem } from '../models/TodoItem'
 
 
 export class TodoAccess {
-    
+  
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly s3Bucket = process.env.IMAGES_BUCKET) {
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET) {
   }
 
 //   async getAllGroups(): Promise<Group[]> {
@@ -22,19 +22,19 @@ export class TodoAccess {
 //     return items as Group[]
 //   }
 
-  async generateUrl(todoId: string) {
+  generateUrl(todoId: string) {
+      console.log(" bucket name ", this.s3Bucket)
       const url = uploadUrl(todoId, this.s3Bucket)
-      return {
-        uploadUrl: url
-      }
+      return url
   }
 
    async createTodo(todo: TodoItem): Promise<TodoItem> {
-     todo.attachmentUrl = `https://${this.s3Bucket}.s3.amazonaws.com/${todo.todoId}`
+     todo.attachmentUrl = `https://${this.s3Bucket}.s3.amazonaws.com/${todo.todoId}`     
+     console.log('createTodo Access', todo.attachmentUrl)
      todo.done = true 
-    const newItem = {
-        ...todo
-    }
+      const newItem = {
+          ...todo
+      }
     
     await this.docClient.put({
       TableName: this.todosTable,

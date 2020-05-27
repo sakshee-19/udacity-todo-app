@@ -15,6 +15,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     INDEX_NAME: TodosIndex
+    IMAGES_S3_BUCKET: Todo-Images-${self:provider.stage}
   
 
 functions:
@@ -66,6 +67,11 @@ functions:
       - http:
           method: post
           path: todos/{todoId}/attachment
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
 
 resources:
   Resources:
@@ -96,4 +102,43 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index
+    
+    AttachmentsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.IMAGES_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - 'GET'
+                - 'POST'
+                - 'PUT'
+                - 'DELETE'
+                - 'HEAD'
+              MaxAge: 3000
+    # add permisiion to read
+    BucketPolicy: # IAM policies
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: MyPolicy # to read all images without any auth and identification
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
+        Bucket: !Ref AttachmentsBucket
+      
+      
+
+
+
+
       

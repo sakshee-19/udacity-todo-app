@@ -23,3 +23,7 @@ export async function createTodos(todoItemRequest: CreateTodoRequest, jwtToken: 
 
     return await todoAccess.createTodo(createTodoItem)
 }
+
+export function generateUploadUrl(todoId: string):string {
+    return todoAccess.generateUrl(todoId)
+}
