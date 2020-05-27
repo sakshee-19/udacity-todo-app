@@ -3,6 +3,7 @@ import { TodoItem } from '../models/TodoItem';
 import { parseUserId } from '../auth/utils';
 import { CreateTodoRequest } from '../requests/CreateTodoRequest';
 import { TodoAccess } from '../dataLayer/todosAccess'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
 
 const todoAccess = new TodoAccess()
 
@@ -31,4 +32,14 @@ export function generateUploadUrl(todoId: string):string {
  export async function getAllTodos(jwtToken: string) : Promise<TodoItem[]> {
     const userId = parseUserId(jwtToken)
     return await todoAccess.getAllTodos(userId)
+}
+
+export async function updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, jwtToken: string) {
+    const userId = parseUserId(jwtToken)
+    const key = {
+        todoId: todoId,
+        userId: userId
+    }
+    console.log('key ', key);
+    return await todoAccess.updateTodo(updateTodoReq, todoId, userId)
 }

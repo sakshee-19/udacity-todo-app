@@ -1,6 +1,7 @@
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { TodoItem } from '../models/TodoItem'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 
 export class TodoAccess {
@@ -8,7 +9,8 @@ export class TodoAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET) {
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
+    private readonly index = process.env.INDEX_NAME) {
   }
 
   generateUrl(todoId: string) {
@@ -47,6 +49,49 @@ export class TodoAccess {
 
     const items = results.Items
     return items as TodoItem[]
+  }
+
+  async updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
+    
+    // const result = await this.docClient.query({
+    //   TableName: this.todosTable,
+    //   IndexName: this.index,
+    //   KeyConditionExpression: 'todoId= :todoId',
+    //   ExpressionAttributeValues:{
+    //     ':todoId': key.todoId
+    //   }
+    // }).promise()
+
+    // if(result.Count == 0) {
+    //   return undefined
+    // }
+
+    console.log(this.index)
+
+
+    const updatedItem = await this.docClient.update({
+      TableName: this.todosTable,
+      Key: {
+        "todoId": todoId,
+        "userId": userId
+      },
+      UpdateExpression: 'set name=:name, dueDate=:dueDate,  done=:done',
+      ExpressionAttributeValues:{
+        ':name': updateTodoReq.name,
+        ':dueDate': updateTodoReq.dueDate,
+        ':done': updateTodoReq.done
+      },
+      ReturnValues: "ALL_NEW",
+
+    }).promise()
+    console.log('updated item ', updatedItem)
+    // const updateItem = result.Items[0]
+    // updateItem.name = updateTodoReq.name
+    // updateItem.dueDate = updateTodoReq.dueDate
+    // updateItem.done = updateTodoReq.done
+  
+    return updatedItem
+    
   }
 }
 
