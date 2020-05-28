@@ -1,11 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "my-type",
+  "title": "todo",
   "type": "object",
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     }
   },
-  "required": ["name"]
+  "required": ["name"],
+  "additionalProperties": false
 }
