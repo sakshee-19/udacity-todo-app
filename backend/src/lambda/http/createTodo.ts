@@ -31,6 +31,13 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   } catch (e) {
     logger.info('authorization error ', {errorMessage: e.message})
-    return undefined
+    return {
+      statusCode: 201,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify([])
+    }
   }
 }
