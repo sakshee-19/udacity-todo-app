@@ -6,8 +6,11 @@
     "name": {
       "type": "string",
       "minLength": 1
+    },
+    "dueDate": {
+      "type": "string",
+      "minLength": 5  
     }
   },
-  "required": ["name"],
-  "additionalProperties": false
+  "required": ["name"]
 }
